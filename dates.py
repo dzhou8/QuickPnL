@@ -42,20 +42,23 @@ def filter_dates_by_weekday(date_list, selected_days):
     return [d for d in date_list if pd.to_datetime(d).weekday() in selected_nums]
 
 def get_all_filter_checkboxes():
-    """Render checkboxes and return list of selected filters"""
     selected_filters = []
 
-    if st.checkbox("Daily"):
-        selected_filters.append("daily")
+    col1, col2 = st.columns(2)
 
-    for day in WEEKDAYS:
-        if st.checkbox(day):
-            selected_filters.append(day)
+    with col1:
+        st.markdown("**Weekdays & Daily**")
+        if st.checkbox("Daily"):
+            selected_filters.append("daily")
+        for day in WEEKDAYS:
+            if st.checkbox(day):
+                selected_filters.append(day)
 
-    st.subheader("Event Filters")
-    for event in list_available_event_filters():
-        if st.checkbox(event):
-            selected_filters.append(event)
+    with col2:
+        st.markdown("**Event Filters**")
+        for event in list_available_event_filters():
+            if st.checkbox(event):
+                selected_filters.append(event)
 
     return selected_filters
 
