@@ -16,7 +16,7 @@ def _load_all_event_dates():
     for path in event_dir.glob('*.txt'):
         name = path.stem
         with open(path, "r") as f:
-            dates = [line.strip() for line in f if line.strip()]
+            dates = [pd.to_datetime(line.strip()).date() for line in f if line.strip()]
             _event_dates[name] = dates
             print(f"[Event Load] {name}: {len(dates)} dates loaded")
 
