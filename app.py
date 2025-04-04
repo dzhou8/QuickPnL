@@ -1,14 +1,21 @@
-# app.py
 import streamlit as st
 import pandas as pd
 import plotly.express as px
 from datetime import time
-from data import load_data, generate_trade_data, backtest, calculate_annualized_sharpe
-from dates import filter_dates_by_weekday
+from data import (
+    load_data,
+    generate_trade_data,
+    backtest,
+    calculate_annualized_sharpe,
+)
+from dates import (
+    get_filtered_dates,
+    list_available_event_filters,
+    get_all_filter_checkboxes
+)
+
 
 st.set_page_config(layout="wide")
-
-# --- Title ---
 st.title("Simple Backtest Viewer")
 
 # --- Load both datasets ---
@@ -31,27 +38,20 @@ with st.sidebar:
     time_start = pd.to_datetime(time_start_str).time()
     time_end = pd.to_datetime(time_end_str).time()
 
-    # Position type
+    # Position selection
     position = st.selectbox("Position", ['long', 'short'])
 
-    # Date filtering options
-    st.subheader("Date Filtering")
+    # Date filtering (checkboxes + logic from dates.py)
+    st.subheader("Date Filters")
+    selected_filters = get_all_filter_checkboxes()
+
     all_dates = sorted(df['Date'].unique())
-    use_all = st.checkbox("Daily")
-    weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
-    selected_weekdays = [day for day in weekdays if st.checkbox(day)]
+    default_dates = get_filtered_dates(all_dates, selected_filters)
+    valid_default_dates = [d for d in default_dates if d in all_dates]
 
-    if use_all:
-        default_dates = all_dates
-    elif selected_weekdays:
-        default_dates = filter_dates_by_weekday(all_dates, selected_weekdays)
-    else:
-        default_dates = []
-
-    st.write(f"Selected {len(default_dates)} dates.")
-
+    st.write(f"Selected {len(valid_default_dates)} dates.")
     with st.expander("Optional: Manually edit selected dates"):
-        dates = st.multiselect("Select Dates", all_dates, default=default_dates)
+        dates = st.multiselect("Select Dates", all_dates, default=valid_default_dates)
 
     run = st.button("Run Backtest")
 
