@@ -9,28 +9,25 @@ from data import (
     calculate_annualized_sharpe,
 )
 from dates import (
-    get_filtered_dates,
-    list_available_event_filters,
-    get_all_filter_checkboxes
+    get_all_filter_checkboxes,
+    compute_filtered_dates,
+    get_all_event_dates
 )
-
 
 st.set_page_config(layout="wide")
 st.title("Simple Backtest Viewer")
 
-# --- Load both datasets ---
+# --- Load datasets ---
 ES_df = load_data("ES")
 NQ_df = load_data("NQ")
 
-# --- Sidebar ---
+# --- Sidebar UI ---
 with st.sidebar:
     st.header("Backtest Parameters")
 
-    # Dataset selection
     dataset_choice = st.selectbox("Dataset", ["ES", "NQ"])
     df = ES_df if dataset_choice == "ES" else NQ_df
 
-    # Time selection
     valid_times = sorted(df['Time'].unique())
     valid_time_strs = [t.strftime('%H:%M') for t in valid_times]
     time_start_str = st.selectbox("Start Time (Eastern)", valid_time_strs, index=valid_time_strs.index('09:30'))
@@ -38,15 +35,19 @@ with st.sidebar:
     time_start = pd.to_datetime(time_start_str).time()
     time_end = pd.to_datetime(time_end_str).time()
 
-    # Position selection
     position = st.selectbox("Position", ['long', 'short'])
 
-    # Date filtering (checkboxes + logic from dates.py)
+    # Filter checkboxes
     st.subheader("Date Filters")
     selected_filters = get_all_filter_checkboxes()
 
-    all_dates = sorted(df['Date'].unique())
-    default_dates = get_filtered_dates(all_dates, selected_filters)
+    # Combine dates from dataset and event files
+    df_dates = set(df['Date'].unique())
+    event_dates = set(pd.Series(pd.to_datetime(get_all_event_dates())).dt.date)
+    all_dates = sorted(df_dates.union(event_dates))
+
+    # Get final list of dates from selected filters
+    default_dates = compute_filtered_dates(all_dates, selected_filters)
     valid_default_dates = [d for d in default_dates if d in all_dates]
 
     st.write(f"Selected {len(valid_default_dates)} dates.")
@@ -55,7 +56,7 @@ with st.sidebar:
 
     run = st.button("Run Backtest")
 
-# --- Main panel ---
+# --- Main content ---
 if run:
     if time_end <= time_start:
         st.error("End time must be later than start time.")
