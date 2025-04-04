@@ -28,6 +28,9 @@ with st.sidebar:
     dataset_choice = st.selectbox("Dataset", ["ES", "NQ"])
     df = ES_df if dataset_choice == "ES" else NQ_df
 
+    # Show dataset date range
+    st.markdown(f"**Date Range Loaded:** {df['Date'].min()} → {df['Date'].max()}")
+
     valid_times = sorted(df['Time'].unique())
     valid_time_strs = [t.strftime('%H:%M') for t in valid_times]
     time_start_str = st.selectbox("Start Time (Eastern)", valid_time_strs, index=valid_time_strs.index('09:30'))
@@ -51,7 +54,7 @@ with st.sidebar:
     valid_default_dates = [d for d in default_dates if d in all_dates]
 
     st.write(f"Selected {len(valid_default_dates)} dates.")
-    with st.expander("Optional: Manually edit selected dates"):
+    with st.expander("Edit Selected Dates"):
         dates = st.multiselect("Select Dates", all_dates, default=valid_default_dates)
 
     run = st.button("Run Backtest")
