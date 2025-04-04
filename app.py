@@ -6,7 +6,7 @@ from data import (
     load_data,
     generate_trade_data,
     backtest,
-    calculate_annualized_sharpe,
+    display_backtest_results
 )
 from dates import (
     get_all_filter_checkboxes,
@@ -70,17 +70,7 @@ if run:
             st.warning("No matching rows found for the selected dates/times.")
         else:
             bt_result = backtest(trade_df, position)
-            sharpe, mean_pnl, std_pnl, num_days, avg_gap = calculate_annualized_sharpe(bt_result)
+            display_backtest_results(bt_result, dataset_choice)
 
-            fig = px.line(bt_result, x='date', y='cumulative_PnL', title=f'{dataset_choice} Cumulative PnL')
-            st.plotly_chart(fig, use_container_width=True)
-
-            st.markdown(f"**Annualized Sharpe Ratio:** {sharpe:.3f}")
-            st.markdown(f"- Mean PnL: {mean_pnl:.4f}")
-            st.markdown(f"- Std PnL: {std_pnl:.4f}")
-            st.markdown(f"- Number of Trades: {num_days}")
-            st.markdown(f"- Avg Days Between Trades: {avg_gap:.2f}")
-
-            st.dataframe(bt_result, use_container_width=True)
 else:
     st.info("Select parameters on the left and click 'Run Backtest' to begin.")

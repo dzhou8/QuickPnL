@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 import streamlit as st
+import plotly.express as px
 
 @st.cache_data
 def load_data(symbol):
@@ -67,3 +68,17 @@ def calculate_annualized_sharpe(trade_df):
 
     sharpe = (mean_pnl / std_pnl) * np.sqrt(252 / avg_gap)
     return sharpe, mean_pnl, std_pnl, num_trades, avg_gap
+
+def display_backtest_results(bt_result, dataset_choice):
+    sharpe, mean_pnl, std_pnl, num_days, avg_gap = calculate_annualized_sharpe(bt_result)
+
+    fig = px.line(bt_result, x='date', y='cumulative_PnL', title=f'{dataset_choice} Cumulative PnL')
+    st.plotly_chart(fig, use_container_width=True)
+
+    st.markdown(f"**Annualized Sharpe Ratio:** {sharpe:.3f}")
+    st.markdown(f"- Mean PnL: {mean_pnl:.4f}")
+    st.markdown(f"- Std PnL: {std_pnl:.4f}")
+    st.markdown(f"- Number of Trades: {num_days}")
+    st.markdown(f"- Avg Days Between Trades: {avg_gap:.2f}")
+
+    st.dataframe(bt_result, use_container_width=True)
