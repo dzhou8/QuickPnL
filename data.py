@@ -1,18 +1,12 @@
+import streamlit as st
 import pandas as pd
 import numpy as np
-from datetime import datetime
-import streamlit as st
 import plotly.express as px
+from datetime import datetime
 
 @st.cache_data
-def load_data(symbol):
-    if symbol == "ES":
-        path = './data/ES_5Years_8_11_2024.csv'
-    elif symbol == "NQ":
-        path = './data/NQ_5Years_8_11_2024.csv'
-    else:
-        raise ValueError("Unsupported symbol")
-
+def _load_raw(symbol):
+    path = f'./data/{symbol}_5Years_8_11_2024.csv'
     df = pd.read_csv(path)
     df['datetime'] = pd.to_datetime(df['Time']).dt.round('min')
     df['Date'] = df['datetime'].dt.date
@@ -20,26 +14,69 @@ def load_data(symbol):
     df = df.set_index('datetime')
     return df
 
-def generate_trade_data(df, dates, time_start, time_end):
+def get_dataset(symbol):
+    if symbol == "ES":
+        return st.session_state.es_df
+    elif symbol == "NQ":
+        return st.session_state.nq_df
+    elif symbol == "NQ - ES":
+        return st.session_state.nq_df, st.session_state.es_df
+    else:
+        raise ValueError(f"Unsupported symbol: {symbol}")
+
+def generate_trade_data(dates, time_start, time_end, dataset_choice):
     rows = []
+
     for date_str in dates:
         date_obj = pd.to_datetime(date_str).date()
         start_dt = pd.Timestamp(datetime.combine(date_obj, time_start)).round('min')
         end_dt = pd.Timestamp(datetime.combine(date_obj, time_end)).round('min')
 
-        if start_dt in df.index and end_dt in df.index:
-            start_price = df.loc[start_dt]['Close']
-            end_price = df.loc[end_dt]['Close']
-            diff = end_price - start_price
+        if dataset_choice == "NQ - ES":
+            nq_df, es_df = get_dataset("NQ - ES")
+            if start_dt not in nq_df.index or start_dt not in es_df.index:
+                continue
+            if end_dt not in nq_df.index or end_dt not in es_df.index:
+                continue
 
-            rows.append({
-                'date': date_str,
-                'start_dt': start_dt,
-                'end_dt': end_dt,
-                'start_price': start_price,
-                'end_price': end_price,
-                'diff': diff
-            })
+            nq_start = nq_df.loc[start_dt]["Close"]
+            es_start = es_df.loc[start_dt]["Close"]
+            nq_end = nq_df.loc[end_dt]["Close"]
+            es_end = es_df.loc[end_dt]["Close"]
+
+            row = {
+                "date": date_str,
+                "start_dt": start_dt,
+                "end_dt": end_dt,
+                "NQ_start": nq_start,
+                "ES_start": es_start,
+                "NQ_end": nq_end,
+                "ES_end": es_end,
+                "NQ_diff": nq_end - nq_start,
+                "ES_diff": es_end - es_start,
+                "start_price": nq_start - es_start,
+                "end_price": nq_end - es_end,
+                "diff": (nq_end - es_end) - (nq_start - es_start),
+            }
+
+        else:
+            df = get_dataset(dataset_choice)
+            if start_dt not in df.index or end_dt not in df.index:
+                continue
+
+            start_price = df.loc[start_dt]["Close"]
+            end_price = df.loc[end_dt]["Close"]
+
+            row = {
+                "date": date_str,
+                "start_dt": start_dt,
+                "end_dt": end_dt,
+                "start_price": start_price,
+                "end_price": end_price,
+                "diff": end_price - start_price,
+            }
+
+        rows.append(row)
 
     return pd.DataFrame(rows)
 
