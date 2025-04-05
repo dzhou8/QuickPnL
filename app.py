@@ -27,6 +27,9 @@ if "nq_df" not in st.session_state:
 with st.sidebar:
     st.header("Backtest Parameters")
 
+    es_dates = st.session_state.es_df['Date']
+    st.markdown(f"**Data Range:** {es_dates.min()} - {es_dates.max()}")
+
     dataset_choice = st.selectbox("Dataset", ["ES", "NQ", "NQ - ES"])
 
     valid_time_strs = [f"{h:02d}:{m:02d}" for h in range(0, 24) for m in range(0, 60, 5)]
