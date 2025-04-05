@@ -40,14 +40,23 @@ with st.sidebar:
     st.subheader("Date Filters")
     selected_filters = get_all_filter_checkboxes()
 
-    all_event_dates = set(pd.Series(pd.to_datetime(get_all_event_dates())).dt.date)
-    all_data_dates = compute_filtered_dates(all_event_dates, ["daily"])
-    default_dates = compute_filtered_dates(all_data_dates, selected_filters)
-    valid_default_dates = sorted(set(default_dates) & set(all_data_dates))
+    # Get all available dates from dataset(s)
+    if dataset_choice == "NQ - ES":
+        es_dates = set(st.session_state.es_df['Date'].unique())
+        nq_dates = set(st.session_state.nq_df['Date'].unique())
+        data_dates = sorted(es_dates & nq_dates)
+    else:
+        df = get_dataset(dataset_choice)
+        data_dates = sorted(df['Date'].unique())
+
+    event_dates = set(pd.Series(pd.to_datetime(get_all_event_dates())).dt.date)
+    all_available_dates = sorted(set(data_dates).union(event_dates))
+    default_dates = compute_filtered_dates(all_available_dates, selected_filters)
+    valid_default_dates = sorted(set(default_dates) & set(all_available_dates))
 
     st.write(f"Selected {len(valid_default_dates)} dates.")
     with st.expander("Edit Selected Dates"):
-        dates = st.multiselect("Select Dates", all_data_dates, default=valid_default_dates)
+        dates = st.multiselect("Select Dates", all_available_dates, default=valid_default_dates)
 
     run = st.button("Run Backtest")
 
