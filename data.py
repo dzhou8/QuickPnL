@@ -44,19 +44,22 @@ def generate_trade_data(dates, time_start, time_end, dataset_choice):
             nq_end = nq_df.loc[end_dt]["Close"]
             es_end = es_df.loc[end_dt]["Close"]
 
+            # Percent returns
+            nq_pct_return = 100 * (nq_end - nq_start) / nq_start
+            es_pct_return = 100 * (es_end - es_start) / es_start
+            spread_pct_return = nq_pct_return - es_pct_return
+
             row = {
                 "date": date_str,
                 "start_dt": start_dt,
                 "end_dt": end_dt,
-                "NQ_start": nq_start,
-                "ES_start": es_start,
-                "NQ_end": nq_end,
-                "ES_end": es_end,
-                "NQ_diff": nq_end - nq_start,
-                "ES_diff": es_end - es_start,
-                "start_price": nq_start - es_start,
-                "end_price": nq_end - es_end,
-                "diff": (nq_end - es_end) - (nq_start - es_start),
+                "NQ_start_price": nq_start,
+                "ES_start_price": es_start,
+                "NQ_end_price": nq_end,
+                "ES_end_price": es_end,
+                "NQ_pct_return": nq_pct_return,
+                "ES_pct_return": es_pct_return,
+                "diff": spread_pct_return,
             }
 
         else:
@@ -73,7 +76,7 @@ def generate_trade_data(dates, time_start, time_end, dataset_choice):
                 "end_dt": end_dt,
                 "start_price": start_price,
                 "end_price": end_price,
-                "diff": end_price - start_price,
+                "diff": end_price - start_price,  # <- PnL in percentage space
             }
 
         rows.append(row)
