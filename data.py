@@ -112,13 +112,26 @@ def calculate_annualized_sharpe(trade_df):
 def display_backtest_results(bt_result, dataset_choice):
     sharpe, mean_pnl, std_pnl, num_days, avg_gap = calculate_annualized_sharpe(bt_result)
 
-    fig = px.line(bt_result, x='date', y='cumulative_PnL', title=f'{dataset_choice} Cumulative PnL')
+    is_percent = dataset_choice == "NQ - ES"
+    unit_label = "%" if is_percent else "$"
+
+    fig = px.line(
+        bt_result,
+        x='date',
+        y='cumulative_PnL',
+        title=f'{dataset_choice} Cumulative PnL ({unit_label})'
+    )
     st.plotly_chart(fig, use_container_width=True)
 
+    # Format based on unit
+    mean_str = f"{mean_pnl:.4f}%" if is_percent else f"${mean_pnl:.4f}"
+    std_str = f"{std_pnl:.4f}%" if is_percent else f"${std_pnl:.4f}"
+
     st.markdown(f"**Annualized Sharpe Ratio:** {sharpe:.3f}")
-    st.markdown(f"- Mean PnL: {mean_pnl:.4f}")
-    st.markdown(f"- Std PnL: {std_pnl:.4f}")
+    st.markdown(f"- Mean PnL: {mean_str}")
+    st.markdown(f"- Std PnL: {std_str}")
     st.markdown(f"- Number of Trades: {num_days}")
     st.markdown(f"- Avg Days Between Trades: {avg_gap:.2f}")
 
     st.dataframe(bt_result, use_container_width=True)
+
