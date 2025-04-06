@@ -71,7 +71,20 @@ It’s a sanity checker, not a strategy builder.
 This project was originally meant to backtest simple option strategies — but I’m still looking for accessible, high-quality options data.
 
 ## How to Run Locally
+Clone the repo and install dependencies. Consider using a python virtual environment:
+```bash
+git clone https://github.com/dzhou8/QuickPnL.git
+cd QuickPnL
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
 
+Start the streamlit app:
+```bash
+streamlit run app.py
+```
+and it should open up as http://localhost:8501 on your browser
 
 
 
