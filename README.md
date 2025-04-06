@@ -45,9 +45,9 @@ Here are a few other promisng strategies I found myself using QuickPnL — each 
 
 I’ve intentionally left out the parameters — but feel free to reach out if you're curious.
 
-![Strategy 1](demo/strategy1.png)
-![Strategy 2](demo/strategy2.png)
 ![Strategy 3](demo/strategy3.png)
+![Strategy 2](demo/strategy2.png)
+![Strategy 1](demo/strategy1.png)
 
 A Sharpe of 1.0 isn’t exceptional, but it’s meaningful.  
 Stronger edges typically require more sophistication — and are often already competed out.
