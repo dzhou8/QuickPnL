@@ -41,9 +41,9 @@ More importantly, this example highlights how QuickPnL helps you go from a **mar
 
 ## Additional Examples
 
-Here are a few other promisng strategies I found myself using QuickPnL — each showing a Sharpe ratio around 1.0.
+Here are a few other promisng strategies I found myself using QuickPnL, each with a Sharpe ratio around 1.0.
 
-I’ve intentionally left out the parameters — but feel free to reach out if you're curious.
+I’ve intentionally left out the parameters, but feel free to reach out if you're curious.
 
 ![Strategy 3](demo/strategy3.png)
 ![Strategy 2](demo/strategy2.png)
@@ -68,7 +68,7 @@ It’s a sanity checker, not a strategy builder.
 - Use more granular and up-to-date futures data (currently Aug 2019–Aug 2024)  
 - Extend to option-based strategies once I find the right dataset  
 
-This project was originally meant to backtest simple option strategies — but I’m still looking for accessible, high-quality options data.
+This project was originally meant to backtest simple option strategies. I’m still looking for accessible, high-quality options data.
 
 ## How to Run Locally
 Clone the repo and install dependencies. Consider using a python virtual environment:
