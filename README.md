@@ -50,13 +50,13 @@ I’ve intentionally left out the parameters, but feel free to reach out if you'
 ![Strategy 1](demo/strategy1.png)
 
 A Sharpe of 1.0 isn’t exceptional, but it’s meaningful.  
-Stronger edges typically require more sophistication — and are often already competed out.
+Stronger edges typically require more sophistication and are often already competed out.
 
 ## What This Tool Is and Isn't
 
-QuickPnL helps test whether a trading hypothesis has any measurable historical signal — nothing more, nothing less.
+QuickPnL helps test whether a trading hypothesis has any measurable historical signal. Nothing more, nothing less.
 
-It doesn’t model execution, slippage, or risk. It won’t tell you what’s tradable or profitable on its own — and it’s very easy to overfit if you’re not careful.
+It doesn’t model execution, slippage, or risk. It won’t tell you what’s tradable or profitable on its own, and it’s very easy to overfit if you’re not careful.
 
 QuickPnL is built for hypotheses that come from real-world reasoning — macro, structure, or intuition — not from over-optimization. 
 It’s a sanity checker, not a strategy builder.
