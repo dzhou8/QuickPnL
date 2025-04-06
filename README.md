@@ -41,7 +41,7 @@ More importantly, this example highlights how QuickPnL helps you go from a **mar
 
 ## Additional Examples
 
-Here are a few other promisng strategies I found myself using QuickPnL, each with a Sharpe ratio around 1.0.
+Here are a few other promising strategies I found myself using QuickPnL, each with a Sharpe ratio around 1.0.
 
 I’ve intentionally left out the parameters, but feel free to reach out if you're curious.
 
