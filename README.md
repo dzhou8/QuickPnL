@@ -33,7 +33,7 @@ Here’s what that might look like in action:
 
 The outcome?
 
-> **Sharpe Ratio: 0.75** over 29 trades — a solid starting point.
+> **Sharpe Ratio: 0.75** over 29 trades: a solid starting point.
 
 It’s not a definitive result, given the relatively small number of trades, but it suggests there may be some underlying signal in the idea.
 
